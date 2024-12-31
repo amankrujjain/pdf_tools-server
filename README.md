@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # PDF Tools
 
 This project provides an API to convert DOC files to PDF using Node.js, Express, and LibreOffice.
@@ -78,3 +79,6 @@ This project provides an API to convert DOC files to PDF using Node.js, Express,
 ## License
 
 This project is licensed under the MIT License.
+=======
+# pdf_tools-server
+>>>>>>> a58c448d40638169fac6c32343ba8e1b26f62be4
