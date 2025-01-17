@@ -4,16 +4,18 @@ const fs = require("fs");
 
 const convertDocToPdf = (filePath) => {
   return new Promise((resolve, reject) => {
-    const outputDir = path.join(__dirname, "../convertedFiles"); // Target folder for converted files
-    const fileName = path.basename(filePath, path.extname(filePath)) + ".pdf"; // Retain original name with .pdf extension
+    const outputDir = path.join(__dirname, "../convertedFiles"); 
+    const fileName = path.basename(filePath, path.extname(filePath)) + ".pdf"; 
     const outputFilePath = path.join(outputDir, fileName);
 
-    // Ensure convertedFiles directory exists
+    
     if (!fs.existsSync(outputDir)) {
       fs.mkdirSync(outputDir);
     }
 
-    const libreOfficePath = `"C:\\Program Files\\LibreOffice\\program\\soffice.exe"`;
+    const libreOfficePath =
+    process.platform === "win32" ? `"C:\\Program Files\\LibreOffice\\program\\soffice.exe"` : "/usr/bin/soffice";
+
     const command = `${libreOfficePath} --headless --convert-to pdf "${filePath}" --outdir "${outputDir}"`;
 
     exec(command, (error, stdout, stderr) => {
@@ -23,7 +25,7 @@ const convertDocToPdf = (filePath) => {
         reject(new Error("Failed to convert the document to PDF"));
       } else {
         console.log("Command Output (stdout):", stdout);
-        resolve(outputFilePath); // Return the new location of the converted file
+        resolve(outputFilePath)
       }
     });
   });
