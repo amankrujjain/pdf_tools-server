@@ -4,7 +4,7 @@ const fs = require("fs");
 
 const convertDocToPdf = (filePath) => {
   return new Promise((resolve, reject) => {
-    const outputDir = path.join(__dirname, "../convertedFiles"); 
+    const outputDir = path.join(__dirname, "../convertedFiles/docToPdf"); 
     const fileName = path.basename(filePath, path.extname(filePath)) + ".pdf"; 
     const outputFilePath = path.join(outputDir, fileName);
 

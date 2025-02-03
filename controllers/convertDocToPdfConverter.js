@@ -2,10 +2,10 @@ const { convertDocToPdf } = require('../services/convertDocToPdf');
 const path = require("path");
 const fs = require("fs");
 const { v4: uuidv4 } = require('uuid');
-const cron = require('node-cron');
+
 
 const uploadDir = path.join(__dirname, "../uploads");
-const convertedDir = path.join(__dirname, "../convertedFiles");
+const convertedDir = path.join(__dirname, "../convertedFiles/docToPdf");
 
 // Function to convert uploaded file
 const convertFile = async (req, res) => {
@@ -61,7 +61,6 @@ const downloadFile = (req, res) => {
     try {
         const fileName = req.params.filename;
         const filePath = path.join(convertedDir, fileName);
-
         if (!fs.existsSync(filePath)) {
             return res.status(404).json({
                 success: false,
@@ -96,41 +95,6 @@ const downloadFile = (req, res) => {
     }
 };
 
-// Cron job to clean up old files
-cron.schedule('0 * * * *', () => { // Runs every hour
-    [uploadDir, convertedDir].forEach((dir) => {
-        fs.readdir(dir, (err, files) => {
-            if (err) {
-                console.error(`Error reading directory ${dir}:`, err);
-                return;
-            }
-
-            files.forEach((file) => {
-                const filePath = path.join(dir, file);
-                fs.stat(filePath, (statErr, stats) => {
-                    if (statErr) {
-                        console.error(`Error stating file ${file}:`, statErr);
-                        return;
-                    }
-
-                    const now = Date.now();
-                    const fileAge = now - stats.mtimeMs; // File age in milliseconds
-                    const maxAge = 1 * 60 * 60 * 1000; // 1 hour
-
-                    if (fileAge > maxAge) {
-                        fs.unlink(filePath, (unlinkErr) => {
-                            if (unlinkErr) {
-                                console.error(`Error deleting file ${file}:`, unlinkErr);
-                            } else {
-                                console.log(`Deleted old file: ${file}`);
-                            }
-                        });
-                    }
-                });
-            });
-        });
-    });
-});
 
 module.exports = {
     convertFile,
